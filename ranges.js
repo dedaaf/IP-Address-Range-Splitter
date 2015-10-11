@@ -5,60 +5,64 @@ var getValue =  function(){
   return range_element.value;
 };
 
-var giveResult = function(){
+var extractRange =  function(){
   var range = getValue();
   var regexp =   /\d.[^-]+/g;
   var rangeMatch = range.match(regexp); //put two ip limit addreses in an array
 
-  console.log(rangeMatch);
-
   var range_begin = rangeMatch[0]; //set begin ip address
   var range_end = rangeMatch[1]; //set end ip address
 
-  console.log("begin range:",range_begin);
-  console.log("end range:",range_end);
+  return rangeMatch;
+};
 
-  var firstPart_IP_regexp = /\d+\./g; //get first part of ip without last numbers
-  var firstpartIP_aray = range_begin.match(firstPart_IP_regexp);
+var getFirstPart_of_FirstIP = function(range_begin){
 
-   console.log("firstpart Array:", firstpartIP_aray);
+  var begin_IP_Regexp = /\d+\./g; //get first part of ip without last numbers
+  var firstpartIP_aray = range_begin.match(begin_IP_Regexp);
 
-   var lenghtFirstPart = firstpartIP_aray.length; //determine length of the first part
-   console.log(lenghtFirstPart);
+  console.log("firstpart Array:", firstpartIP_aray);
+
+  var lenghtFirstPart = firstpartIP_aray.length; //determine length of the first part of th ip address
   var firstpart='';
-   for (var i=0;i<lenghtFirstPart;i++){
+  for (var i=0;i<lenghtFirstPart;i++){
     firstpart += firstpartIP_aray[i];
-   }
-  //var firstpart = firstpartIP_aray[0]  + firstpartIP_aray[1];
+  }
+  return firstpart;
+};
 
-  console.log("firstpart :", firstpart);
-
+var getLastPart_of_FirstIP = function(range_begin){
   var end_IP_Regexp = /\d+\s|\d+$/g; //regEx to find lastnumber in ip address
   var beginIP = range_begin.match(end_IP_Regexp); //store begin integer of ip address
-  var last_of_begin_IpNumber = parseInt(beginIP[0]); //get the last number of this ip address
+  var lastNumber_of_IP = parseInt(beginIP[0]); //get the last number of this ip address
 
-   console.log(last_of_begin_IpNumber);
+  return lastNumber_of_IP;
+};
 
-  console.log(firstpart.concat(last_of_begin_IpNumber));
-
+var getIP_of_LastIP =  function(range_end){
+  var end_IP_Regexp = /\d+\s|\d+$/g; //regEx to find lastnumber in ip address
   var endIP = range_end.match(end_IP_Regexp); //use last ip and the last number to limit the for loop
   var endIpNumber = parseInt(endIP[0]);
-  console.log(endIpNumber);
+  return endIpNumber;
+};
+
+var giveResult =  function(){
+  var firstPart_of_firstIP = getFirstPart_of_FirstIP(extractRange()[0]); //create the firstpart of the ip
+  var lastPart_of_firstIP =  getLastPart_of_FirstIP(extractRange()[0]); // create the lastpart of the ip
+  var lastPart_of_lastIP =  getIP_of_LastIP(extractRange()[1]); // check what the last number is of the ip.
+  var nextIP;
+
   for(var y=0;y<256;y++){
-    nextIP_of_begin_number = last_of_begin_IpNumber + y;
+    nextIP = lastPart_of_firstIP + y;
 
-    newIP = firstpart.concat(nextIP_of_begin_number);
+    newIP = firstPart_of_firstIP.concat(nextIP);
 
-    if(nextIP_of_begin_number==endIpNumber+1){
+    if(nextIP==lastPart_of_lastIP+1){
       break;
     }
-
-
     document.getElementById('results').innerHTML += newIP+"\r\n";
 
   }
-
-
 
 };
 
