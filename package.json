@@ -1,0 +1,14 @@
+{
+  "name": "githubbox",
+  "version": "0.1.0",
+  "private": true,
+  "dependencies": {},
+  "scripts": {
+    "start": "serve src",
+    "pub": "wrangler publish",
+    "pub:prod": "wrangler publish --env production"
+  },
+  "devDependencies": {
+    "serve": "11.3.0"
+  }
+}
